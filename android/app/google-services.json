@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "598301076946",
+    "project_id": "instax-59310",
+    "storage_bucket": "instax-59310.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598301076946:android:0cc1713f044de96fdf6c0b",
+        "android_client_info": {
+          "package_name": "com.klilmhdi.zinsta.zinsta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598301076946-vb819igiohpn2mmm92ba59r4micblrup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhpbcNRfjOz9WkG4fyLSRK5J2CzbmO6Y4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598301076946-vb819igiohpn2mmm92ba59r4micblrup.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "598301076946-g0p0o9smpn4rilbjanatiej5qeludh3j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.khlilmhdi.socialmedia.socialMediaFirebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
