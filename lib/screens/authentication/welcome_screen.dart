@@ -34,28 +34,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                const Text(
-                  'Welcome Back !',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+                CircleAvatar(backgroundImage: AssetImage('assets/icons/app_icon.png'), radius: 30),
+                const Text('Welcome to ZInsta', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(height: kToolbarHeight),
                 TabBar(
                   controller: tabController,
                   dividerColor: Colors.transparent,
-                  unselectedLabelColor: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.5),
+                  unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                   labelColor: Theme.of(context).colorScheme.onSurface,
                   indicatorAnimation: TabIndicatorAnimation.elastic,
                   tabs: const [
-                    Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Text('Sign In', style: TextStyle(fontSize: 18)),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Text('Sign Up', style: TextStyle(fontSize: 18)),
-                    ),
+                    Padding(padding: EdgeInsets.all(12.0), child: Text('Sign In', style: TextStyle(fontSize: 18))),
+                    Padding(padding: EdgeInsets.all(12.0), child: Text('Sign Up', style: TextStyle(fontSize: 18))),
                   ],
                 ),
                 Expanded(
@@ -64,16 +54,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                     children: [
                       BlocProvider<SignInBloc>(
                         create:
-                            (context) => SignInBloc(
-                              userRepository: context.read<AuthenticationBloc>().userRepository,
-                            ),
+                            (context) => SignInBloc(userRepository: context.read<AuthenticationBloc>().userRepository),
                         child: const SignInScreen(),
                       ),
                       BlocProvider<SignUpBloc>(
                         create:
-                            (context) => SignUpBloc(
-                              userRepository: context.read<AuthenticationBloc>().userRepository,
-                            ),
+                            (context) => SignUpBloc(userRepository: context.read<AuthenticationBloc>().userRepository),
                         child: const SignUpScreen(),
                       ),
                     ],

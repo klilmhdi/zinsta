@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zinsta/components/consts/animations.dart';
-import 'package:zinsta/components/consts/app_color.dart';
 import 'package:zinsta/components/consts/appbar_widget.dart';
-import 'package:zinsta/components/consts/fab_widget.dart';
+import 'package:zinsta/components/consts/bottom_nav_bar.dart';
 import 'package:zinsta/screens/layout/home/notification/notification_screen.dart';
 
 import '../../blocs/cubits/app_cubit/app_cubit.dart';
@@ -52,20 +50,14 @@ class _LayoutState extends State<Layout> {
                     curve: Curves.easeInOut,
                   );
                 },
-                onNotificationPressed:
-                    () => Animations().rtlNavigationAnimation(context, NotificationScreen()),
+                onNotificationPressed: () => Animations().rtlNavigationAnimation(context, NotificationScreen()),
               ),
               extendBodyBehindAppBar: cubit.currentIndex == 1 ? true : false,
               body: cubit.screens[cubit.currentIndex],
-              floatingActionButton: buildFABWidget(),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-              bottomNavigationBar: BottomNavigationBar(
-                elevation: 0,
+              bottomNavigationBar: buildBottomNavBar(
                 items: cubit.items,
                 currentIndex: cubit.currentIndex,
-                unselectedItemColor: AppBasicsColors.secondaryColor,
-                selectedItemColor: AppBasicsColors.primaryColor,
-                onTap: (index) => setState(() => cubit.changeBottomNavBar(index)),
+                onTap: (value) => setState(() => cubit.changeBottomNavBar(value)),
               ),
             ),
             if (cubit.currentIndex == 0) ...[ChatLayoutPage()],

@@ -1,18 +1,22 @@
+import 'package:equatable/equatable.dart';
 import 'package:notification_repository/src/entities/notification_entity.dart';
 import 'package:notification_repository/src/enums/notification_type.dart';
-import 'package:equatable/equatable.dart';
 
-class Notification extends Equatable {
-  final DateTime createdAt;
+class NotificationModel extends Equatable {
   final String id;
-  final bool isRead;
   final String message;
   final String postId;
   final String receiverId;
   final String senderId;
+  final String senderName;
+  final String senderPicture;
+  final String postContent;
+  final String postImageUrl;
+  final bool isRead;
+  final DateTime createdAt;
   final NotificationTypeEnum type;
 
-  const Notification({
+  const NotificationModel({
     required this.createdAt,
     required this.id,
     required this.isRead,
@@ -20,33 +24,49 @@ class Notification extends Equatable {
     required this.postId,
     required this.receiverId,
     required this.senderId,
+    required this.senderName,
+    required this.senderPicture,
+    required this.postImageUrl,
+    this.postContent = '',
     required this.type,
   });
 
-  static var empty = Notification(
+  static var empty = NotificationModel(
     createdAt: DateTime.now(),
-    id: '1',
+    id: '0',
     isRead: false,
     message: '',
     postId: '',
     receiverId: '',
     senderId: '',
+    senderName: '',
+    postImageUrl: '',
+    senderPicture: '',
+    postContent: '',
     type: NotificationTypeEnum.like,
   );
 
-  Notification copyWith({
+  NotificationModel copyWith({
     String? id,
     String? postId,
     String? message,
     String? senderId,
     String? receiverId,
+    String? senderName,
+    String? senderPicture,
+    String? postContent,
+    String? postImageUrl,
     NotificationTypeEnum? type,
     DateTime? createdAt,
     bool? isRead,
-  }) => Notification(
+  }) => NotificationModel(
     id: id ?? this.id,
     senderId: senderId ?? this.senderId,
     receiverId: receiverId ?? this.receiverId,
+    senderName: senderName ?? this.senderName,
+    senderPicture: senderPicture ?? this.senderPicture,
+    postContent: postContent ?? this.postContent,
+    postImageUrl: postImageUrl ?? this.postImageUrl,
     type: type ?? this.type,
     postId: postId ?? this.postId,
     createdAt: createdAt ?? this.createdAt,
@@ -54,16 +74,20 @@ class Notification extends Equatable {
     message: message ?? this.message,
   );
 
-  bool get isEmpty => this == Notification.empty;
+  bool get isEmpty => this == NotificationModel.empty;
 
-  bool get isNotEmpty => this != Notification.empty;
+  bool get isNotEmpty => this != NotificationModel.empty;
 
-  static Notification fromEntity(NotificationEntity entity) => Notification(
+  static NotificationModel fromEntity(NotificationEntity entity) => NotificationModel(
     id: entity.id,
     message: entity.message,
     postId: entity.postId,
     receiverId: entity.receiverId,
     senderId: entity.senderId,
+    senderName: entity.senderName,
+    postImageUrl: entity.postImageUrl,
+    senderPicture: entity.senderPicture,
+    postContent: entity.postContent,
     type: entity.type,
     isRead: entity.isRead,
     createdAt: entity.createdAt,
@@ -75,11 +99,28 @@ class Notification extends Equatable {
     postId: postId,
     receiverId: receiverId,
     senderId: senderId,
+    senderName: senderName,
+    senderPicture: senderPicture,
+    postContent: postContent,
+    postImageUrl: postImageUrl,
     type: type,
     isRead: isRead,
     createdAt: createdAt,
   );
 
   @override
-  List<Object?> get props => [id, message, createdAt, isRead, postId, receiverId, senderId, type];
+  List<Object?> get props => [
+    id,
+    message,
+    createdAt,
+    isRead,
+    postId,
+    receiverId,
+    senderId,
+    senderName,
+    senderPicture,
+    postContent,
+    postImageUrl,
+    type,
+  ];
 }

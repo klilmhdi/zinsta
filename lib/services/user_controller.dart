@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' hide User;
 import 'package:stream_video_flutter/stream_video_flutter.dart';
 import 'package:zinsta/components/consts/shared_perferenced.dart';
-import 'package:zinsta/components/di.dart';
+import 'package:zinsta/components/consts/di.dart';
 import 'package:zinsta/services/getstream_user_creditional_model.dart';
 import 'package:zinsta/services/token_service.dart';
 import 'package:zinsta/services/user_auth_repo.dart';

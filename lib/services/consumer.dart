@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stream_video_flutter/stream_video_flutter.dart' hide ConnectionState;
 import 'package:zinsta/components/consts/shared_perferenced.dart';
-import 'package:zinsta/components/di.dart';
+import 'package:zinsta/components/consts/di.dart';
 import 'package:zinsta/services/token_service.dart';
 import 'package:zinsta/services/user_controller.dart';
 
@@ -17,9 +17,6 @@ import '../../firebase_options.dart';
 @pragma('vm:entry-point') // Required for Flutter on Android
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint('Handling a background message: ${message.messageId}');
-
-  // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Handle the message
   await AppInjector.init();

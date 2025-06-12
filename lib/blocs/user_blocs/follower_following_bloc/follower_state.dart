@@ -61,29 +61,6 @@ class FollowersLoading extends FollowersState {
   const FollowersLoading() : super(status: FollowStatus.loading);
 }
 
-// class FollowersLoaded extends FollowersState {
-//   final String targetUserId;
-//   final bool isFollowing;
-//   final int followersCount;
-//   final int followingCount;
-//   final List<Map<String, dynamic>>? followersList;
-//   final List<Map<String, dynamic>>? followingList;
-//   final FollowStatus status;
-//
-//   const FollowersLoaded({
-//     required this.targetUserId,
-//     required this.isFollowing,
-//     required this.followersCount,
-//     required this.followingCount,
-//     this.followersList,
-//     this.followingList,
-//     this.status = FollowStatus.initial,
-//   });
-//
-//   @override
-//   List<Object> get props => [targetUserId, isFollowing, followersCount, followingCount, status];
-// }
-
 class FollowersLoaded extends FollowersState {
   final String targetUserId;
   final bool isFollowing;

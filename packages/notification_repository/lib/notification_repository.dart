@@ -5,4 +5,3 @@ export 'src/enums/notification_type.dart';
 export 'src/onesignal_notification_repository.dart';
 export 'src/models/models.dart';
 export 'src/notification_repo.dart';
-export 'src/services/services.dart';

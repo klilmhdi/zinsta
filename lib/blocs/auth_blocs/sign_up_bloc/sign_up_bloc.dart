@@ -3,33 +3,29 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:equatable/equatable.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:stream_video/stream_video.dart' show User, UserInfo, UserToken;
 import 'package:user_repository/user_repository.dart';
 import 'package:zinsta/components/consts/shared_perferenced.dart';
 
-import '../../../components/di.dart';
+import '../../../components/consts/di.dart';
 import '../../../services/getstream_user_creditional_model.dart';
 import '../../../services/user_controller.dart';
 
 part 'sign_up_event.dart';
-
 part 'sign_up_state.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final UserRepository _userRepository;
 
-  SignUpBloc({required UserRepository userRepository})
-    : _userRepository = userRepository,
-      super(SignUpInitial()) {
+  SignUpBloc({required UserRepository userRepository}) : _userRepository = userRepository, super(SignUpInitial()) {
     on<SignUpRequired>((event, emit) async {
       emit(SignUpProcess());
       try {
-        MyUser userFirebase = await _userRepository.signUp(event.user, event.password);
-        UserInfo userGetStream = UserInfo(
-          id: event.user.id,
-          name: event.user.name,
-          image: event.user.picture,
-        );
+        final fcmToken = await OneSignalNotificationRepository().initializeOneSignal().toString();
+
+        MyUser userFirebase = await _userRepository.signUp(event.user, event.password, fcmToken);
+        UserInfo userGetStream = UserInfo(id: event.user.id, name: event.user.name, image: event.user.picture);
 
         await _userRepository.setUserData(userFirebase);
         log("User registered successfully: $userFirebase");

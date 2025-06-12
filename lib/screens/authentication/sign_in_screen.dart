@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:zinsta/blocs/notification_blocs/notificaiton_bloc.dart';
 import 'package:zinsta/components/consts/buttons.dart';
 import 'package:zinsta/components/consts/loading_indicator.dart';
 import 'package:zinsta/components/consts/text_form_field.dart';
+
 import '../../blocs/auth_blocs/sign_in_bloc/sign_in_bloc.dart';
 import '../../components/consts/strings.dart';
 
@@ -22,8 +24,6 @@ class _SignInScreenState extends State<SignInScreen> {
   String? _errorMsg;
   bool obscurePassword = true;
 
-  // IconData iconPassword = CupertinoIcons.eye_fill;
-  // IconData iconPassword = HugeIcons.strokeRoundedEye;
   IconData iconPassword = HugeIcons.strokeRoundedView;
   bool signInRequired = false;
 
@@ -107,8 +107,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: BasicButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        context.read<SignInBloc>().add(
-                          SignInRequired(emailController.text, passwordController.text),
+                        context.read<SignInBloc>().add(SignInRequired(emailController.text, passwordController.text));
+                        context.read<NotificationBloc>().add(
+                          UpdateOneSignalPlayerId(FirebaseAuth.instance.currentUser?.uid ?? "Empty"),
                         );
                       }
                     },

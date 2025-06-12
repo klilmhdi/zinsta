@@ -5,7 +5,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zinsta/services/getstream_user_creditional_model.dart';
 import 'package:zinsta/services/token_service.dart';
 
-enum PrKeys { languageCode, themeCurrentIndex, isLogin, menuCurrentIndex, flutterSdkPath }
+enum PrKeys {
+  languageCode,
+  themeCurrentIndex,
+  isLogin,
+  menuCurrentIndex,
+  flutterSdkPath,
+  likesCount,
+  commentsCount,
+  followersCount,
+  followingCount,
+}
 
 class SharedPrefController {
   SharedPrefController._();
@@ -20,8 +30,7 @@ class SharedPrefController {
 
   factory SharedPrefController() => _instance ??= SharedPrefController._();
 
-  Future<void> initPreferences() async =>
-      _sharedPreferences = await SharedPreferences.getInstance();
+  Future<void> initPreferences() async => _sharedPreferences = await SharedPreferences.getInstance();
 
   T? getValueFor<T>(String key) {
     if (_sharedPreferences!.containsKey(key)) {
@@ -30,9 +39,8 @@ class SharedPrefController {
     return null;
   }
 
-  EnvEnum get environment => EnvEnum.fromSubdomain(
-    _sharedPreferences!.getString(_kEnvironemntPref) ?? EnvEnum.pronto.name,
-  );
+  EnvEnum get environment =>
+      EnvEnum.fromSubdomain(_sharedPreferences!.getString(_kEnvironemntPref) ?? EnvEnum.pronto.name);
 
   UserCredentialsModel? get userCredentials {
     final jsonString = _sharedPreferences!.getString(_kUserCredentialsPref);
@@ -58,20 +66,10 @@ class SharedPrefController {
 
   Future<bool> setApiKey(String apiKey) => _sharedPreferences!.setString(_kApiKeyPref, apiKey);
 
-  Future<bool> setEnvEnum(EnvEnum env) =>
-      _sharedPreferences!.setString(_kEnvironemntPref, env.name);
+  Future<bool> setEnvEnum(EnvEnum env) => _sharedPreferences!.setString(_kEnvironemntPref, env.name);
 
   Future<bool> clearUserCredentials() async =>
-      await _sharedPreferences!.remove(_kUserCredentialsPref) &&
-      await _sharedPreferences!.remove(_kApiKeyPref);
-
-  Future<void> saveCredentials(UserCredentialsModel credentials) async {
-    final prefs = await SharedPreferences.getInstance();
-    // final appPrefs = AppPreferences(prefs: prefs);
-
-    // await appPrefs.setUserCredentials(credentials);
-    // await appPrefs.setApiKey(_kApiKeyPref);
-  }
+      await _sharedPreferences!.remove(_kUserCredentialsPref) && await _sharedPreferences!.remove(_kApiKeyPref);
 
   //==================> Set the language
   Future<bool> setLanguageCode({required String langCode}) async =>
@@ -86,6 +84,40 @@ class SharedPrefController {
 
   void clear() async => _sharedPreferences!.clear();
 
-  Future<bool> setIsLogin({required bool value}) async =>
-      await _sharedPreferences!.setBool(PrKeys.isLogin.name, value);
+  Future<bool> setIsLogin({required bool value}) async => await _sharedPreferences!.setBool(PrKeys.isLogin.name, value);
+
+  Future<bool> setPostLikesCount(String postId, int count) async =>
+      await _sharedPreferences!.setInt('${PrKeys.likesCount.name}_$postId', count);
+
+  int getPostLikesCount(String postId) => _sharedPreferences!.getInt('${PrKeys.likesCount.name}_$postId') ?? 0;
+
+  // Methods for post comments count
+  Future<bool> setPostCommentsCount(String postId, int count) async =>
+      await _sharedPreferences!.setInt('${PrKeys.commentsCount.name}_$postId', count);
+
+  int getPostCommentsCount(String postId) => _sharedPreferences!.getInt('${PrKeys.commentsCount.name}_$postId') ?? 0;
+
+  // Methods for user followers count
+  Future<bool> setUserFollowersCount(String userId, int count) async =>
+      await _sharedPreferences!.setInt('${PrKeys.followersCount.name}_$userId', count);
+
+  int getUserFollowersCount(String userId) => _sharedPreferences!.getInt('${PrKeys.followersCount.name}_$userId') ?? 0;
+
+  // Methods for user following count
+  Future<bool> setUserFollowingCount(String userId, int count) async =>
+      await _sharedPreferences!.setInt('${PrKeys.followingCount.name}_$userId', count);
+
+  int getUserFollowingCount(String userId) => _sharedPreferences!.getInt('${PrKeys.followingCount.name}_$userId') ?? 0;
+
+  // Clear all post-related preferences
+  Future<void> clearPostData(String postId) async {
+    await _sharedPreferences!.remove('${PrKeys.likesCount.name}_$postId');
+    await _sharedPreferences!.remove('${PrKeys.commentsCount.name}_$postId');
+  }
+
+  // Clear all user-related preferences
+  Future<void> clearUserData(String userId) async {
+    await _sharedPreferences!.remove('${PrKeys.followersCount.name}_$userId');
+    await _sharedPreferences!.remove('${PrKeys.followingCount.name}_$userId');
+  }
 }

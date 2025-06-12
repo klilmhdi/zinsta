@@ -7,9 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:zinsta/components/consts/shared_perferenced.dart';
-import 'package:zinsta/components/di.dart';
+import 'package:zinsta/components/consts/di.dart';
 import 'package:zinsta/services/user_controller.dart';
-import 'package:stream_video/stream_video.dart' show User, UserInfo, UserToken;
+import 'package:stream_video/stream_video.dart' show User, UserInfo;
 
 part 'sign_in_event.dart';
 

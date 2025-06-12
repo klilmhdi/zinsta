@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';
@@ -30,12 +27,6 @@ class HomeScreen extends StatelessWidget {
                 addAutomaticKeepAlives: true,
                 itemBuilder: (context, int i) {
                   final user = state.posts[i].myUser;
-                  final picture =
-                      (user.picture.isNotEmpty)
-                          ? (user.picture.startsWith('http')
-                              ? NetworkImage(user.picture)
-                              : FileImage(File(user.picture)) as ImageProvider)
-                          : const AssetImage('assets/icons/placeholder_profile.png');
 
                   return buildPostWidget(
                     context: context,
@@ -43,7 +34,6 @@ class HomeScreen extends StatelessWidget {
                     postPicture: state.posts[i].postPicture,
                     profileUsername: state.posts[i].myUser.username,
                     profilePicture: user.picture,
-                    // profilePicture: picture,
                     profileName: state.posts[i].myUser.name,
                     profileCreatedAt: state.posts[i].createAt,
                     post: state.posts[i],
@@ -57,7 +47,6 @@ class HomeScreen extends StatelessWidget {
             return basicLoadingIndicator();
           } else {
             return basicLoadingIndicator();
-            // return const Center(child: Text(""));
           }
         },
       ),

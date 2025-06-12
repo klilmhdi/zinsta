@@ -18,7 +18,15 @@ abstract class PostRepository {
   /// Delete (Remove) the post
   Future<void> deletePost(Post post);
 
+  /// Set like
   Future<void> toggleLike(Post post, MyUser user);
 
+  /// Add comment
   Future<void> addComment(Post post, Comment comment);
+
+  /// Edit (Update) the comment
+  Future<void> editComment(Post post, Comment updatedComment);
+
+  /// Delete (Remove) the comment
+  Future<void> deleteComment(Post post, Comment comment);
 }

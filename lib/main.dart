@@ -8,8 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:notification_repository/notification_repository.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:zinsta/components/consts/di.dart';
 import 'package:zinsta/components/consts/shared_perferenced.dart';
-import 'package:zinsta/components/di.dart';
+import 'package:zinsta/firebase_options.dart';
 import 'package:zinsta/services/consumer.dart';
 
 import 'app.dart';
@@ -19,7 +20,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// init firebase
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   /// init shared preferenced
   await SharedPrefController().initPreferences();
@@ -33,14 +34,16 @@ void main() async {
   /// init blocs
   Bloc.observer = MyBlocObserver();
 
-  /// init notifications
-  await NotificationServices.init();
+  if (!kIsWeb) {
+    /// init notifications
+    await OneSignalNotificationRepository().initializeOneSignal();
+
+    /// Splash remove settings
+    FlutterNativeSplash.remove();
+  }
 
   /// Set system orientation
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-  /// Splash remove settings
-  FlutterNativeSplash.remove();
 
   /// Captures errors reported by the Flutter framework.
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -51,5 +54,5 @@ void main() async {
     }
   };
 
-  runApp(MainApp(FirebaseUserRepository()));
+  runApp(MainApp(FirebaseUserRepository(notificationRepository: OneSignalNotificationRepository())));
 }

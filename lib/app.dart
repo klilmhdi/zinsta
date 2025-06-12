@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:zinsta/blocs/auth_blocs/authentication_bloc/authentication_bloc.dart';
 
@@ -17,7 +18,11 @@ class MainApp extends StatelessWidget {
         RepositoryProvider<AuthenticationBloc>(
           create: (_) => AuthenticationBloc(myUserRepository: userRepository),
         ),
-        RepositoryProvider<UserRepository>(create: (context) => FirebaseUserRepository()),
+        RepositoryProvider<UserRepository>(
+            create: (context) => FirebaseUserRepository(notificationRepository: OneSignalNotificationRepository())),
+        RepositoryProvider<OneSignalNotificationRepository>(
+          create: (context) => OneSignalNotificationRepository(),
+        ),
       ],
       child: const MyAppView(),
     );

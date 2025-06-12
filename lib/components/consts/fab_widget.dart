@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:post_repository/post_repository.dart';
 import 'package:zinsta/blocs/post_blocs/create_post_bloc/create_post_bloc.dart';
 import 'package:zinsta/blocs/user_blocs/my_user_bloc/my_user_bloc.dart';
@@ -19,17 +20,17 @@ Widget buildFABWidget() => BlocBuilder<MyUserBloc, MyUserState>(
             () => Animations().navFromBottomToTopAnimation(
               context,
               BlocProvider<CreatePostBloc>(
-                create: (context) => CreatePostBloc(postRepository: FirebasePostRepository()),
+                create:
+                    (context) => CreatePostBloc(
+                      postRepository: FirebasePostRepository(notificationRepository: OneSignalNotificationRepository()),
+                    ),
                 child: PostScreen(state.user!),
               ),
             ),
         child: HugeIcon(icon: HugeIcons.strokeRoundedImageAdd02, color: AppBasicsColors.lightBackground),
       );
     } else {
-      return const FloatingActionButton(
-        onPressed: null,
-        child: CircularProgressIndicator(),
-      );
+      return const FloatingActionButton(onPressed: null, child: CircularProgressIndicator());
     }
   },
 );

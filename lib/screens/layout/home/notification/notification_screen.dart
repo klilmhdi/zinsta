@@ -1,263 +1,103 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:zinsta/components/consts/app_color.dart';
-import 'package:zinsta/components/consts/cerificate_icon.dart';
-import 'package:zinsta/components/consts/user_avatar.dart';
+import 'package:zinsta/blocs/notification_blocs/notificaiton_bloc.dart';
+import 'package:zinsta/components/consts/loading_indicator.dart';
+
+import '../../../../blocs/auth_blocs/authentication_bloc/authentication_bloc.dart';
+import '../../../../components/consts/notification_list_tile.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: HugeIcon(icon: HugeIcons.strokeRoundedNotification01),
-        leadingWidth: 40,
-        title: Text("Notifications", style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [Text("(4)", style: TextStyle(fontWeight: FontWeight.bold)), SizedBox(width: 15)],
-      ),
-      body: Center(
-        child: ListView(
-          children: [
-            Container(
-              color: Theme.of(context).cardColor,
-              child: ListTile(
-                leading: Stack(
-                  alignment: Alignment.topRight,
-                  clipBehavior: Clip.none,
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) =>
+          context.read<NotificationBloc>().add(LoadNotifications(context.read<AuthenticationBloc>().state.user!.uid)),
+    );
+    return BlocBuilder<NotificationBloc, NotificationState>(
+      builder:
+          (context, state) => Scaffold(
+            appBar: AppBar(
+              leading: BackButton(),
+              // leading: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01),
+              leadingWidth: 40,
+              title: Text.rich(
+                TextSpan(
+                  text: "Notifications ",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                   children: [
-                    // CircleAvatar(
-                    //   radius: 20,
-                    //   backgroundImage: NetworkImage(
-                    //     'https://static.dw.com/image/44777236_1004.webp',
-                    //   ),
-                    // ),
-                    // Positioned(top: -3, right: -3, child: buildCerificateWidget(size: 15)),
-                    buildUserCertifiedAvatarWidget(
-                      profilePicture: "https://static.dw.com/image/44777236_1004.webp",
-                    ),
-                    Positioned(
-                      top: 29,
-                      left: 31,
-                      child: CircleAvatar(
-                        radius: 8,
-                        backgroundColor: CupertinoColors.destructiveRed,
-                        foregroundColor: CupertinoColors.white,
-                        child: HugeIcon(icon: HugeIcons.strokeRoundedFavouriteCircle, size: 16),
-                      ),
+                    TextSpan(
+                      text: "(${state is NotificationLoaded ? state.notifications.length : 0})",
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
-                title: Text(
-                  "Massoud Ozil liked your post.",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                trailing: Container(
-                  height: 50,
-                  width: 50,
-                  color: AppBasicsColors.primaryBlue,
-                  child: Image.network(
-                    'https://thumb.canalplus.pro/http/unsafe/373x495/filters:quality(80)/canalplus-cdn.canal-plus.io/p1/brand/22781612/canal-ouah_50034/DETAIL34/Arafat_Jaquette_Fiche_Programme_MEA_1242x1656-0',
-                    fit: BoxFit.cover,
-                  ),
-                ),
               ),
+              actions: [
+                IconButton(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  disabledColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  onPressed:
+                      () => context.read<NotificationBloc>().add(
+                        DeleteAllNotification(userId: context.read<AuthenticationBloc>().state.user!.uid),
+                      ),
+                  icon: HugeIcon(icon: HugeIcons.strokeRoundedDelete02, color: CupertinoColors.destructiveRed),
+                ),
+                SizedBox(width: 15),
+              ],
             ),
-            Divider(color: Theme.of(context).dividerColor, height: 10),
-            Container(
-              color: Theme.of(context).cardColor,
-              child: ListTile(
-                // leading: Stack(
-                //   alignment: Alignment.topRight,
-                //   clipBehavior: Clip.none,
-                //   children: [
-                //     CircleAvatar(
-                //       radius: 20,
-                //       backgroundImage: NetworkImage(
-                //         'https://media.elbalad.news/2025/2/large/6541623514781202502240315391539.jpg',
-                //       ),
-                //     ),
-                //     Positioned(top: -3, right: -3, child: buildCerificateWidget(size: 15)),
-                //     Positioned(
-                //       top: 26,
-                //       left: 28,
-                //       child: CircleAvatar(
-                //         radius: 8,
-                //         backgroundColor: AppBasicsColors.primaryColor,
-                //         foregroundColor: CupertinoColors.white,
-                //         child: HugeIcon(icon: HugeIcons.strokeRoundedShare05, size: 12),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                leading: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    buildUserCertifiedAvatarWidget(
-                      profilePicture:
-                          "https://media.elbalad.news/2025/2/large/6541623514781202502240315391539.jpg",
-                    ),
-                    Positioned(
-                      top: 29,
-                      left: 31,
-                      child: CircleAvatar(
-                        radius: 8,
-                        backgroundColor: AppBasicsColors.primaryBlue,
-                        foregroundColor: CupertinoColors.white,
-                        child: HugeIcon(icon: HugeIcons.strokeRoundedShare05, size: 12),
+            body:
+                state is NotificationLoaded
+                    ? state.notifications.isEmpty
+                        ? Center(
+                          child: Column(
+                            spacing: 10,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              HugeIcon(icon: HugeIcons.strokeRoundedNotificationOff01, size: 50),
+                              Text(
+                                'No notifications received yet',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        )
+                        : ListView.separated(
+                          separatorBuilder:
+                              (context, index) => Divider(height: 1, color: Theme.of(context).dividerColor),
+                          itemCount: state.notifications.length,
+                          itemBuilder: (context, index) {
+                            final notification = state.notifications[index];
+                            return NotificationItem(
+                              notification: notification,
+                              isLastItem: index == state.notifications.length - 1,
+                            );
+                          },
+                        )
+                    : state is NotificationLoading
+                    ? Center(child: basicLoadingIndicator())
+                    : Center(
+                      child: Column(
+                        spacing: 10,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          HugeIcon(icon: HugeIcons.strokeRoundedNotificationOff01, size: 50),
+                          Text(
+                            'No notifications received yet',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-
-                title: Text(
-                  "عيسى الوزان  re-share your post.",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                trailing: Container(
-                  height: 50,
-                  width: 50,
-                  color: AppBasicsColors.primaryBlue,
-                  child: Image.network(
-                    'https://thumb.canalplus.pro/http/unsafe/373x495/filters:quality(80)/canalplus-cdn.canal-plus.io/p1/brand/22781612/canal-ouah_50034/DETAIL34/Arafat_Jaquette_Fiche_Programme_MEA_1242x1656-0',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            Divider(color: Theme.of(context).dividerColor, height: 10),
-            Container(
-              color: Theme.of(context).cardColor,
-              child: ListTile(
-                // leading: CircleAvatar(
-                //   radius: 20,
-                //   backgroundColor: AppBasicsColors.primaryColor,
-                //   foregroundColor: CupertinoColors.white,
-                //   child: HugeIcon(icon: HugeIcons.strokeRoundedUserAdd01, size: 20),
-                // ),
-                // leading: Stack(
-                //   alignment: Alignment.topRight,
-                //   clipBehavior: Clip.none,
-                //   children: [
-                //     CircleAvatar(
-                //       radius: 20,
-                //       backgroundImage: NetworkImage(
-                //         'https://upload.wikimedia.org/wikipedia/commons/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg',
-                //       ),
-                //     ),
-                //     Positioned(top: -3, right: -3, child: buildCerificateWidget(size: 15)),
-                //     Positioned(
-                //       top: 26,
-                //       left: 28,
-                //       child: CircleAvatar(
-                //         radius: 8,
-                //         backgroundColor: AppBasicsColors.primaryColor,
-                //         foregroundColor: CupertinoColors.white,
-                //         child: HugeIcon(icon: HugeIcons.strokeRoundedUserAdd01, size: 12),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                leading: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    buildUserCertifiedAvatarWidget(
-                      profilePicture:
-                          "https://upload.wikimedia.org/wikipedia/commons/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg",
-                    ),
-                    Positioned(
-                      top: 29,
-                      left: 31,
-                      child: CircleAvatar(
-                        radius: 8,
-                        backgroundColor: AppBasicsColors.primaryBlue,
-                        foregroundColor: CupertinoColors.white,
-                        child: HugeIcon(icon: HugeIcons.strokeRoundedUserAdd01, size: 12),
-                      ),
-                    ),
-                  ],
-                ),
-
-                title: Text(
-                  "Mark Zuck send a follow for you.",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                trailing: Container(
-                  height: 30,
-                  width: 60,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: CupertinoColors.destructiveRed,
-                  ),
-                ),
-              ),
-            ),
-            Divider(color: Theme.of(context).dividerColor, height: 10),
-            Container(
-              color: Theme.of(context).cardColor,
-              child: ListTile(
-                // leading: Stack(
-                //   alignment: Alignment.topRight,
-                //   clipBehavior: Clip.none,
-                //   children: [
-                //     CircleAvatar(
-                //       radius: 20,
-                //       backgroundImage: NetworkImage(
-                //         'https://upload.wikimedia.org/wikipedia/commons/8/83/TrumpPortrait.jpg',
-                //       ),
-                //     ),
-                //     Positioned(top: -3, right: -3, child: buildCerificateWidget(size: 15)),
-                //     Positioned(
-                //       top: 26,
-                //       left: 28,
-                //       child: CircleAvatar(
-                //         radius: 8,
-                //         backgroundColor: AppBasicsColors.primaryBlue,
-                //         foregroundColor: CupertinoColors.white,
-                //         child: HugeIcon(icon: HugeIcons.strokeRoundedCommentAdd01, size: 12),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                leading: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    buildUserCertifiedAvatarWidget(
-
-                      profilePicture:
-                          "https://upload.wikimedia.org/wikipedia/commons/8/83/TrumpPortrait.jpg",
-                    ),
-                    Positioned(
-                      top: 29,
-                      left: 31,
-                      child: CircleAvatar(
-                        radius: 8,
-                        backgroundColor: AppBasicsColors.primaryBlue,
-                        foregroundColor: CupertinoColors.white,
-                        child: HugeIcon(icon: HugeIcons.strokeRoundedCommentAdd01, size: 12),
-                      ),
-                    ),
-                  ],
-                ),
-                title: Text(
-                  "Donalt Tramp comment on your post: الله يرحم روحك يا أبو عمار",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                trailing: Container(
-                  height: 50,
-                  width: 50,
-                  color: AppBasicsColors.primaryBlue,
-                  child: Image.network(
-                    'https://thumb.canalplus.pro/http/unsafe/373x495/filters:quality(80)/canalplus-cdn.canal-plus.io/p1/brand/22781612/canal-ouah_50034/DETAIL34/Arafat_Jaquette_Fiche_Programme_MEA_1242x1656-0',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 }

@@ -2,34 +2,24 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' hide User;
 import 'package:stream_video_flutter/stream_video_flutter.dart';
 import 'package:stream_video_push_notification/stream_video_push_notification.dart';
 import 'package:zinsta/components/consts/shared_perferenced.dart';
-import 'package:zinsta/services/app_preference.dart';
 import 'package:zinsta/services/token_service.dart';
 import 'package:zinsta/services/user_auth_repo.dart';
 import 'package:zinsta/services/user_chat_repo.dart';
 import 'package:zinsta/services/user_controller.dart';
 
-import '../services/getstream_logger.dart';
+import '../../services/getstream_logger.dart';
 
 GetIt locator = GetIt.instance;
 
 @pragma('vm:entry-point')
 Future<void> _backgroundVoipCallHandler() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // final prefs = await SharedPreferences.getInstance();
-  // final appPrefs = SharedPrefController(prefs: prefs);
-  final prefs = SharedPrefController().initPreferences();
 
+  WidgetsFlutterBinding.ensureInitialized();
   final apiKey = SharedPrefController().environment;
-  // final userCredentials = appPrefs.userCredentials;
-  //
-  // if (userCredentials == null) {
-  //   return;
-  // }
 
   StreamVideo(
     apiKey.toString(),
@@ -58,7 +48,6 @@ Future<void> _backgroundVoipCallHandler() async {
         textDecline: "Decline",
         type: 0,
         nameCaller: "callerName",
-        // avatar: AppConsts.teacherNetworkImage,
       ),
       registerApnDeviceToken: true,
     ),
@@ -71,9 +60,7 @@ class AppInjector {
   // Register dependencies
   static Future<void> init({EnvEnum? forceEnvironment}) async {
     // App Preferences
-    // final prefs = await SharedPreferences.getInstance();
     final prefs = SharedPrefController();
-    // final appPrefs = AppPreferences(prefs: prefs);
 
     if (forceEnvironment != null) {
       await SharedPrefController().setEnvEnum(forceEnvironment);
@@ -89,7 +76,6 @@ class AppInjector {
         ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>tokenResponse.apiKey: ${tokenResponse.apiKey}",
       );
       registerStreamChat(tokenResponse.apiKey);
-      // registerStreamChat("z3k88gbquy4a");
 
       // We need to register the video client here because we need it to
       // initialise the user auth repo.

@@ -11,7 +11,7 @@ abstract class UserRepository {
   Future<void> logOut();
 
   /// Sign up function
-  Future<MyUser> signUp(MyUser myUser, String password);
+  Future<MyUser> signUp(MyUser myUser, String password, String token);
 
   /// Reset password function
   Future<void> resetPassword(String email);
@@ -53,4 +53,7 @@ abstract class UserRepository {
 
   /// Get followings
   Future<List<MyUser>> getFollowing(String userId);
+
+  /// Check if the user online now
+  Future<void> updateUserOnlineStatus(String userId, bool isOnline);
 }

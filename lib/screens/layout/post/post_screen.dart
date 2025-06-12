@@ -144,6 +144,7 @@ class _PostScreenState extends State<PostScreen> {
                 return IconButton(
                   onPressed:
                       () => context.read<ImageHandlerCubit>().pickProfileImages(
+                        context,
                         userId: widget.myUser.id.length,
                         uploadCallback: (path, userId) {},
                       ),

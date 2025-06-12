@@ -16,7 +16,7 @@ class ImageHandlerCubit extends Cubit<ImageHandlerState> {
   static ImageHandlerCubit get(context) => BlocProvider.of(context, listen: false);
 
   /// pick profile picture
-  Future<void> pickProfileImages({
+  Future<void> pickProfileImages(BuildContext context, {
     required int userId,
     required Function(String, int) uploadCallback,
     double maxHeight = 500,
@@ -67,6 +67,7 @@ class ImageHandlerCubit extends Cubit<ImageHandlerState> {
               CropAspectRatioPreset.ratio16x9,
             ],
           ),
+          WebUiSettings(context: context)
         ],
       );
 

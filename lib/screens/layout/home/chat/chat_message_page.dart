@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:zinsta/components/chat_componants/active_users.dart';
-import 'package:zinsta/components/consts/leading_appbar.dart';
 
 import '../../../../components/chat_componants/message_item.dart';
 
@@ -33,7 +32,7 @@ class _ChatMessagePageState extends State<ChatMessagePage> {
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 20,
-        leading: buildLeadingAppbarWidget(context),
+        leading: BackButton(),
         title: Row(
           spacing: 8,
           children: [

@@ -21,7 +21,9 @@ dependencies:
   # Custom Repository
   user_repository:
     path: ../user_repository
-  
+  notification_repository:
+    path: ../notification_repository
+
 
 dev_dependencies:
   flutter_test:

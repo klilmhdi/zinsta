@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -10,7 +9,6 @@ import 'package:zinsta/blocs/user_blocs/my_user_bloc/my_user_bloc.dart';
 import 'package:zinsta/blocs/user_blocs/update_user_info_bloc/update_user_info_bloc.dart';
 import 'package:zinsta/components/consts/app_color.dart';
 import 'package:zinsta/components/consts/dialog.dart';
-import 'package:zinsta/components/consts/leading_appbar.dart';
 import 'package:zinsta/components/consts/snackbars.dart';
 import 'package:zinsta/components/profile_components/profile_editing_form.dart';
 import 'package:zinsta/components/profile_components/profile_picture_background_adding.dart';
@@ -66,12 +64,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               backgroundImagePath = state.imagePath;
             }
           } else if (state is ImageHandlerFailure) {
-            showCustomSnackBar(
-              context: context,
-              title: state.error,
-              duration: 3,
-              type: MessageType.error,
-            );
+            showCustomSnackBar(context: context, title: state.error, duration: 3, type: MessageType.error);
           }
         },
         child: BlocConsumer<UpdateUserInfoBloc, UpdateUserInfoState>(
@@ -102,7 +95,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           builder: (context, state) {
             return Scaffold(
               appBar: AppBar(
-                leading: buildLeadingAppbarWidget(context),
+                leading: BackButton(),
                 backgroundColor: Colors.transparent,
                 title: const Text("Edit Profile Info"),
                 actions: [
@@ -136,6 +129,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     buildProfilePictureBackgroundAddingWidget(
                       onPicturePickedTapped: () {
                         context.read<ImageHandlerCubit>().pickProfileImages(
+                          context,
                           userId: user.id.length,
                           uploadCallback: (path, id) {
                             setState(() => profileImagePath = path);
@@ -144,6 +138,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       },
                       onBackgroundPickedTapped: () {
                         context.read<ImageHandlerCubit>().pickProfileImages(
+                          context,
                           userId: user.id.length,
                           uploadCallback: (path, id) {
                             setState(() => backgroundImagePath = path);

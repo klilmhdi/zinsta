@@ -8,43 +8,76 @@ class NotificationEntity extends Equatable {
   final String postId;
   final String receiverId;
   final String senderId;
-  final NotificationTypeEnum type;
+  final String senderName;
+  final String senderPicture;
+  final String postContent;
+  final String postImageUrl;
   final bool isRead;
   final DateTime createdAt;
+  final NotificationTypeEnum type;
 
   const NotificationEntity({
+    required this.createdAt,
     required this.id,
+    required this.isRead,
     required this.message,
     required this.postId,
     required this.receiverId,
     required this.senderId,
+    required this.senderName,
+    required this.senderPicture,
+    this.postContent = '',
+    this.postImageUrl = '',
     required this.type,
-    required this.isRead,
-    required this.createdAt,
   });
 
-  Map<String, Object?> toDocument() => {
-    'id': id,
-    'postId': postId,
-    'message': message,
-    'senderId': senderId,
-    'receiverId': receiverId,
-    'isRead': isRead,
-    'type': type,
-    'createAt': Timestamp.fromDate(createdAt),
-  };
+  Map<String, Object?> toDocument() {
+    return {
+      'createdAt': createdAt,
+      'id': id,
+      'isRead': isRead,
+      'message': message,
+      'postId': postId,
+      'receiverId': receiverId,
+      'senderId': senderId,
+      'senderName': senderName,
+      'senderPicture': senderPicture,
+      'postContent': postContent,
+      'postImageUrl': postImageUrl,
+      'type': type.toJson(),
+    };
+  }
 
-  static NotificationEntity fromDocument(Map<String, dynamic> doc) => NotificationEntity(
-    id: doc['id'] as String? ?? '',
-    senderId: doc['senderId'] as String? ?? '',
-    receiverId: doc['receiverId'] as String? ?? '',
-    postId: doc['postId'] as String? ?? '',
-    message: doc['message'] as String? ?? '',
-    isRead: doc['isRead'] as bool? ?? false,
-    createdAt: (doc['createdAt'] as Timestamp?)?.toDate() ?? DateTime(1970),
-    type: NotificationTypeEnumExtension.fromJson(doc['type']),
-  );
+  static NotificationEntity fromDocument(Map<String, dynamic> doc) {
+    return NotificationEntity(
+      createdAt: (doc['createdAt'] as Timestamp).toDate(),
+      id: doc['id'] as String,
+      isRead: doc['isRead'] as bool,
+      message: doc['message'] as String,
+      postId: doc['postId'] as String? ?? '',
+      receiverId: doc['receiverId'] as String,
+      senderId: doc['senderId'] as String,
+      senderName: doc['senderName'] as String? ?? '',
+      senderPicture: doc['senderPicture'] as String? ?? '',
+      postImageUrl: doc['postImageUrl'] as String? ?? '',
+      postContent: doc['postContent'] as String? ?? '',
+      type: NotificationTypeEnumExtension.fromJson(doc['type'] as String),
+    );
+  }
 
   @override
-  List<Object?> get props => [id, message, createdAt, isRead, postId, receiverId, senderId, type];
+  List<Object?> get props => [
+    id,
+    message,
+    createdAt,
+    isRead,
+    postId,
+    receiverId,
+    senderId,
+    senderName,
+    senderPicture,
+    postContent,
+    type,
+    postImageUrl
+  ];
 }

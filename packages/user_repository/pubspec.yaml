@@ -27,6 +27,8 @@ dev_dependencies:
 dependency_overrides:
   post_repository:
     path: ../post_repository
+  notification_repository:
+    path: ../notification_repository
 
 flutter:
   uses-material-design: true

@@ -4,8 +4,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:zinsta/components/consts/app_color.dart';
 import 'package:zinsta/components/consts/loading_indicator.dart';
 
-void customDialog(
-  BuildContext context, {
+void customDialog(BuildContext context, {
   required String title,
   required String subtitle,
   required String outlineButtonText,
@@ -30,24 +29,20 @@ void customDialog(
           OutlinedButton(
             onPressed: () => Navigator.of(context).pop(),
             style: ButtonStyle(
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              side: WidgetStatePropertyAll(
-                BorderSide(width: 2, color: AppBasicsColors.darkCardColor),
-              ),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+              side: WidgetStatePropertyAll(BorderSide(width: 2, color: AppBasicsColors.darkCardColor)),
             ),
             child: Text(outlineButtonText),
           ),
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: const WidgetStatePropertyAll(AppBasicsColors.primaryColor),
-              shape: WidgetStatePropertyAll(
-                ContinuousRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
+              shape: WidgetStatePropertyAll(ContinuousRectangleBorder(borderRadius: BorderRadius.circular(14))),
             ),
-            onPressed:
-                () async => await customButtonFunction().then((_) => Navigator.of(context).pop()),
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
+              await customButtonFunction();
+            },
             child: Text(customButtonText, style: TextStyle(color: CupertinoColors.white)),
           ),
         ],
@@ -56,11 +51,12 @@ void customDialog(
   );
 }
 
-void showLoadingDialog(BuildContext context) => showDialog(
-  context: context,
-  barrierDismissible: false,
-  builder: (context) => Center(child: basicLoadingIndicator()),
-);
+void showLoadingDialog(BuildContext context) =>
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: basicLoadingIndicator()),
+    );
 
 void dismissDialog(BuildContext context) {
   if (Navigator.canPop(context)) Navigator.pop(context);

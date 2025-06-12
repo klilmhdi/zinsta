@@ -8,6 +8,7 @@ import 'package:zinsta/blocs/user_blocs/follower_following_bloc/follower_bloc.da
 import 'package:zinsta/components/consts/animations.dart';
 import 'package:zinsta/components/consts/app_color.dart';
 import 'package:zinsta/components/consts/placeholders.dart';
+import 'package:zinsta/components/consts/shared_perferenced.dart';
 import 'package:zinsta/components/consts/shimmer.dart';
 import 'package:zinsta/components/consts/user_avatar.dart';
 import 'package:zinsta/screens/layout/profile/follower_following_screen.dart';
@@ -21,8 +22,18 @@ Widget profileDetailsWidget(
   required String userId,
   required int followerCount,
   required int followingCount,
+  required bool isCurrentUser,
   String? bio,
 }) {
+  final pref = SharedPrefController();
+  // Get cached counts if available
+  final cachedFollowers = pref.getUserFollowersCount(userId);
+  final cachedFollowing = pref.getUserFollowingCount(userId);
+
+  // Use cached counts if they exist, otherwise use the provided counts
+  final displayedFollowers = cachedFollowers > 0 ? cachedFollowers : followerCount;
+  final displayedFollowing = cachedFollowing > 0 ? cachedFollowing : followingCount;
+
   if (userId != FirebaseAuth.instance.currentUser?.uid) {
     context.read<FollowersBloc>().add(LoadFollowersCount(userId));
   }
@@ -67,14 +78,11 @@ Widget profileDetailsWidget(
                 child: CircleAvatar(
                   radius: 38,
                   backgroundColor: AppBasicsColors.lightBackground,
-                  child: buildUserCertifiedAvatarWidget(
-                    profilePicture: image,
-                    avatarSize: 70,
-                    certifiedSize: 20,
-                  ),
+                  child: buildUserCertifiedAvatarWidget(profilePicture: image, avatarSize: 70, certifiedSize: 20),
                 ),
               ),
             ),
+            SafeArea(child: !isCurrentUser ? Align(alignment: Alignment.topLeft, child: BackButton(color: CupertinoColors.black,)) : SizedBox()),
           ],
         ),
       ),
@@ -136,11 +144,7 @@ Widget profileDetailsWidget(
                       overflow: TextOverflow.ellipsis,
                       "Write your awesome Bio from Edit profile 🌟",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: CupertinoColors.systemGrey2,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: CupertinoColors.systemGrey2),
                     ),
                     const SizedBox(height: 5),
                   ],
@@ -153,11 +157,7 @@ Widget profileDetailsWidget(
         focusColor: Colors.transparent,
 
         /// navigate to FollowerFollowingScreen
-        onTap:
-            () => Animations().rtlNavigationAnimation(
-              context,
-              FollowersFollowingsScreen(userId: userId),
-            ),
+        onTap: () => Animations().rtlNavigationAnimation(context, FollowersFollowingsScreen(userId: userId)),
 
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -168,14 +168,10 @@ Widget profileDetailsWidget(
                 children: [
                   Text(
                     "Follower: ",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: CupertinoColors.systemGrey,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: CupertinoColors.systemGrey),
                   ),
                   AnimatedFlipCounter(
-                    value: followerCount,
+                    value: displayedFollowers,
                     textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -185,14 +181,10 @@ Widget profileDetailsWidget(
                 children: [
                   Text(
                     "Following: ",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: CupertinoColors.systemGrey,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: CupertinoColors.systemGrey),
                   ),
                   AnimatedFlipCounter(
-                    value: followingCount,
+                    value: displayedFollowing,
                     textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],

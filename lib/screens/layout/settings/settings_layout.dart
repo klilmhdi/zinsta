@@ -5,11 +5,12 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:zinsta/blocs/auth_blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:zinsta/components/consts/animations.dart';
 import 'package:zinsta/components/consts/app_color.dart';
-import 'package:zinsta/components/consts/leading_appbar.dart';
+import 'package:zinsta/components/consts/di.dart';
+import 'package:zinsta/screens/authentication/welcome_screen.dart';
 import 'package:zinsta/screens/layout/settings/change_language_screen.dart';
+import 'package:zinsta/services/user_controller.dart';
 
 import '../../../blocs/cubits/app_cubit/app_cubit.dart';
-import '../../../components/consts/dialog.dart';
 
 class SettingLayout extends StatelessWidget {
   const SettingLayout({super.key});
@@ -19,7 +20,7 @@ class SettingLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings"),
-        leading: buildLeadingAppbarWidget(context),
+        leading: BackButton(),
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
@@ -32,9 +33,7 @@ class SettingLayout extends StatelessWidget {
                 title: Text("Theme", style: TextStyle(fontWeight: FontWeight.bold)),
                 leading: HugeIcon(icon: HugeIcons.strokeRoundedColors, size: 20),
                 trailing: BlocBuilder<AppCubit, AppState>(
-                  buildWhen:
-                      (previous, current) =>
-                          previous.themeCurrentIndex != current.themeCurrentIndex,
+                  buildWhen: (previous, current) => previous.themeCurrentIndex != current.themeCurrentIndex,
                   builder: (context, state) {
                     AppCubit appCubit = BlocProvider.of(context, listen: false);
                     return Switch.adaptive(
@@ -80,26 +79,81 @@ class SettingLayout extends StatelessWidget {
               ListTile(
                 title: const Text(
                   "Logout",
-                  style: TextStyle(
-                    color: CupertinoColors.destructiveRed,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: CupertinoColors.destructiveRed, fontWeight: FontWeight.bold),
                 ),
-                trailing: const HugeIcon(
-                  icon: HugeIcons.strokeRoundedLogout01,
-                  color: CupertinoColors.destructiveRed,
-                ),
-                onTap:
-                    () => customDialog(
-                      context,
-                      title: "Logout",
-                      subtitle: "Do you wanna logout?",
-                      outlineButtonText: "No",
-                      customButtonText: "Logout",
-                      icon: HugeIcons.strokeRoundedLogout01,
-                      customButtonFunction:
-                          () async => context.read<SignInBloc>().add(const SignOutRequired()),
-                    ),
+                trailing: const HugeIcon(icon: HugeIcons.strokeRoundedLogout01, color: CupertinoColors.destructiveRed),
+                onTap: () async {
+                  // Store navigator reference before any async operations
+                  final navigator = Navigator.of(context, rootNavigator: true);
+
+                  // Show confirmation dialog
+                  final shouldLogout = await showDialog<bool>(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: const Text("Logout"),
+                          content: const Text("Do you want to logout?"),
+                          actions: [
+                            TextButton(child: const Text("No"), onPressed: () => Navigator.of(context).pop(false)),
+                            TextButton(
+                              child: const Text("Logout", style: TextStyle(color: CupertinoColors.destructiveRed)),
+                              onPressed: () => Navigator.of(context).pop(true),
+                            ),
+                          ],
+                        ),
+                  );
+
+                  if (shouldLogout != true) return;
+
+                  try {
+                    // Perform logout operations
+                    await locator.get<UserAuthController>().logout();
+                    context.read<SignInBloc>().add(const SignOutRequired());
+
+                    // Navigate to welcome screen using the stored navigator reference
+                    navigator.pushAndRemoveUntil(MaterialPageRoute(builder: (_) => WelcomeScreen()), (route) => false);
+                  } catch (e) {
+                    debugPrint('Logout error: $e');
+                    // Show error using the stored navigator context
+                    ScaffoldMessenger.of(
+                      navigator.context,
+                    ).showSnackBar(SnackBar(content: Text('Logout failed: ${e.toString()}')));
+                  }
+                },
+                // onTap: () => customDialog(
+                //   context,
+                //   title: "Logout",
+                //   subtitle: "Do you wanna logout?",
+                //   outlineButtonText: "No",
+                //   customButtonText: "Logout",
+                //   icon: HugeIcons.strokeRoundedLogout01,
+                //   customButtonFunction: () async {
+                //     try {
+                //       // Close any open dialogs first
+                //       Navigator.of(context, rootNavigator: true).pop();
+                //
+                //       // Perform logout operations
+                //       await locator.get<UserAuthController>().logout();
+                //       context.read<SignInBloc>().add(const SignOutRequired());
+                //
+                //       // Add a small delay to ensure all state changes propagate
+                //       await Future.delayed(const Duration(milliseconds: 100));
+                //
+                //       // Use Navigator.of with rootNavigator: true to ensure we're working with the root navigator
+                //       Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                //         MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                //             (route) => false,
+                //       );
+                //     } catch (e) {
+                //       debugPrint('Logout error: $e');
+                //       if (context.mounted) {
+                //         ScaffoldMessenger.of(context).showSnackBar(
+                //           SnackBar(content: Text('Logout failed: ${e.toString()}')),
+                //         );
+                //       }
+                //     }
+                //   },
+                // ),
               ),
             ],
           ),
@@ -108,15 +162,11 @@ class SettingLayout extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingWidget(
-    context, {
-    required String title,
-    required Widget screen,
-    required IconData icon,
-  }) => ListTile(
-    leading: HugeIcon(icon: icon, size: 20),
-    title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-    trailing: HugeIcon(icon: HugeIcons.strokeRoundedCircleArrowRight01, size: 20),
-    onTap: () => Animations().rtlNavigationAnimation(context, screen),
-  );
+  Widget _buildSettingWidget(context, {required String title, required Widget screen, required IconData icon}) =>
+      ListTile(
+        leading: HugeIcon(icon: icon, size: 20),
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        trailing: HugeIcon(icon: HugeIcons.strokeRoundedCircleArrowRight01, size: 20),
+        onTap: () => Animations().rtlNavigationAnimation(context, screen),
+      );
 }

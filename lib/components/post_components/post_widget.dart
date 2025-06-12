@@ -1,26 +1,24 @@
 import 'package:animated_flip_counter/animated_flip_counter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:post_repository/post_repository.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:zinsta/blocs/cubits/like_comment_cubit/like_comment_cubit.dart';
-import 'package:zinsta/blocs/cubits/like_comment_cubit/like_comment_state.dart';
 import 'package:zinsta/blocs/post_blocs/delete_post_bloc/delete_user_bloc.dart';
+import 'package:zinsta/blocs/post_blocs/like_comment_cubit/like_comment_cubit.dart';
 import 'package:zinsta/components/consts/animations.dart';
 import 'package:zinsta/components/consts/app_color.dart';
 import 'package:zinsta/components/consts/buttons.dart';
-
 import 'package:zinsta/components/consts/dialog.dart';
 import 'package:zinsta/components/consts/popup_menu.dart';
 import 'package:zinsta/components/consts/shimmer.dart';
 import 'package:zinsta/components/consts/strings.dart';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:zinsta/components/consts/user_avatar.dart';
 import 'package:zinsta/screens/layout/post/post_screen.dart';
 
+import '../../blocs/post_blocs/like_comment_cubit/like_comment_state.dart';
 import '../consts/comment_widget.dart';
 
 Widget buildPostWidget({
@@ -87,10 +85,7 @@ Widget _profileDetailsWidget({
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  profileName,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
+                Text(profileName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 const SizedBox(width: 20),
               ],
             ),
@@ -135,10 +130,7 @@ Widget _profileDetailsWidget({
         ? buildPostMenuWidget(
           onSelected: (action) {
             if (action == PostAction.edit) {
-              Animations().rtlNavigationAnimation(
-                context,
-                PostScreen(post.myUser, postToEdit: post),
-              );
+              Animations().rtlNavigationAnimation(context, PostScreen(post.myUser, postToEdit: post));
             } else if (action == PostAction.delete) {
               customDialog(
                 context,
@@ -147,8 +139,7 @@ Widget _profileDetailsWidget({
                 outlineButtonText: "Cancel",
                 customButtonText: "Delete",
                 icon: HugeIcons.strokeRoundedDelete01,
-                customButtonFunction:
-                    () async => context.read<DeletePostBloc>().add(SubmitDeletePost(post)),
+                customButtonFunction: () async => context.read<DeletePostBloc>().add(SubmitDeletePost(post)),
               );
             }
           },
@@ -157,52 +148,49 @@ Widget _profileDetailsWidget({
   ],
 );
 
-Widget _postBodyWidget({
-  required BuildContext context,
-  required String postText,
-  required String postPicture,
-}) => Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      if (postText.isNotEmpty) ...[
-        Text(postText, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        const SizedBox(height: 10),
-      ],
-      if (postPicture.isNotEmpty) ...[
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: CachedNetworkImage(
-            imageUrl: postPicture,
-            fit: BoxFit.contain,
-            width: double.infinity,
-            placeholder: (context, url) => buildShimmer(height: 200),
-            errorWidget:
-                (context, url, error) => Container(
-                  height: 200,
-                  color: Colors.grey[200],
-                  child: Center(child: HugeIcon(icon: HugeIcons.strokeRoundedCameraOff02)),
-                ),
-          ),
-        ),
-      ],
-    ],
-  ),
-);
+Widget _postBodyWidget({required BuildContext context, required String postText, required String postPicture}) =>
+    Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (postText.isNotEmpty) ...[
+            Text(postText, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const SizedBox(height: 10),
+          ],
+          if (postPicture.isNotEmpty) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: CachedNetworkImage(
+                imageUrl: postPicture,
+                fit: BoxFit.contain,
+                width: double.infinity,
+                placeholder: (context, url) => buildShimmer(height: 200),
+                errorWidget:
+                    (context, url, error) => Container(
+                      height: 200,
+                      color: Colors.grey[200],
+                      child: Center(child: HugeIcon(icon: HugeIcons.strokeRoundedCameraOff02)),
+                    ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
 
 Widget buildReactButtonsWidget(BuildContext context, Post post, MyUser currentUser) {
   final isLiked = post.likes.any((user) => user.id == currentUser.id);
-  final likeCount = post.likes.length;
-  final commentsCount = post.comments.length;
+  final likeCount = post.likes.length; // Directly use post.likes.length
 
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
       LikeButton(
         isLiked: isLiked,
-        onTap: () => context.read<LikesCommentsCubit>().toggleLike(post, currentUser),
+        onTap: () => context.read<LikesCommentsCubit>().toggleLike(context, post: post, currentUser: currentUser),
         likeCount: likeCount,
+        postId: post.postId,
       ),
       InkWell(
         onTap:
@@ -212,9 +200,7 @@ Widget buildReactButtonsWidget(BuildContext context, Post post, MyUser currentUs
               enableDrag: true,
               showDragHandle: true,
               isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
               builder: (context) => CommentBottomSheet(post: post, currentUser: currentUser),
             ),
         child: Row(
@@ -222,31 +208,66 @@ Widget buildReactButtonsWidget(BuildContext context, Post post, MyUser currentUs
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 4,
           children: [
-            HugeIcon(
-              icon: HugeIcons.strokeRoundedComment03,
-              size: 18,
-              color: AppBasicsColors.primaryBlue,
-            ),
+            HugeIcon(icon: HugeIcons.strokeRoundedComment03, size: 18, color: AppBasicsColors.primaryBlue),
             AnimatedFlipCounter(
-              value: commentsCount,
+              value: post.comments.length,
               textStyle: TextStyle(fontWeight: FontWeight.bold, color: AppBasicsColors.primaryBlue),
             ),
           ],
         ),
       ),
-      HugeIcon(
-        icon: HugeIcons.strokeRoundedShare05,
-        size: 18,
-        color: AppBasicsColors.secondaryColor,
-      ),
-      HugeIcon(
-        icon: HugeIcons.strokeRoundedAllBookmark,
-        size: 18,
-        color: AppBasicsColors.primaryColor,
-      ),
+      HugeIcon(icon: HugeIcons.strokeRoundedShare05, size: 18, color: AppBasicsColors.secondaryColor),
+      HugeIcon(icon: HugeIcons.strokeRoundedAllBookmark, size: 18, color: AppBasicsColors.primaryColor),
     ],
   );
 }
+
+// Widget buildReactButtonsWidget(BuildContext context, Post post, MyUser currentUser) {
+//   final pref = SharedPrefController();
+//   final cachedLikeCount = pref.getPostLikesCount(post.postId);
+//   final cachedCommentCount = pref.getPostCommentsCount(post.postId);
+//   final isLiked = post.likes.any((user) => user.id == currentUser.id);
+//   final likeCount = cachedLikeCount > 0 ? cachedLikeCount : post.likes.length;
+//   final commentsCount = cachedCommentCount > 0 ? cachedCommentCount : post.comments.length;
+//
+//   return Row(
+//     mainAxisAlignment: MainAxisAlignment.spaceAround,
+//     children: [
+//       LikeButton(
+//         isLiked: isLiked,
+//         onTap: () => context.read<LikesCommentsCubit>().toggleLike(context, post: post, currentUser: currentUser),
+//         likeCount: likeCount,
+//         postId: post.postId,
+//       ),
+//       InkWell(
+//         onTap:
+//             () => showModalBottomSheet(
+//               context: context,
+//               isDismissible: false,
+//               enableDrag: true,
+//               showDragHandle: true,
+//               isScrollControlled: true,
+//               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+//               builder: (context) => CommentBottomSheet(post: post, currentUser: currentUser),
+//             ),
+//         child: Row(
+//           crossAxisAlignment: CrossAxisAlignment.center,
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           spacing: 4,
+//           children: [
+//             HugeIcon(icon: HugeIcons.strokeRoundedComment03, size: 18, color: AppBasicsColors.primaryBlue),
+//             AnimatedFlipCounter(
+//               value: commentsCount,
+//               textStyle: TextStyle(fontWeight: FontWeight.bold, color: AppBasicsColors.primaryBlue),
+//             ),
+//           ],
+//         ),
+//       ),
+//       HugeIcon(icon: HugeIcons.strokeRoundedShare05, size: 18, color: AppBasicsColors.secondaryColor),
+//       HugeIcon(icon: HugeIcons.strokeRoundedAllBookmark, size: 18, color: AppBasicsColors.primaryColor),
+//     ],
+//   );
+// }
 
 Widget _editedText() => Row(
   children: [

@@ -1,1 +1,51 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"instax-59310","appId":"1:598301076946:android:0cc1713f044de96fdf6c0b","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"instax-59310","configurations":{"android":"1:598301076946:android:0cc1713f044de96fdf6c0b","ios":"1:598301076946:ios:2fb395612388abf2df6c0b"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "instax-59310",
+          "appId": "1:598301076946:android:0cc1713f044de96fdf6c0b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "instax-59310",
+          "configurations": {
+            "android": "1:598301076946:android:0cc1713f044de96fdf6c0b",
+            "ios": "1:598301076946:ios:2fb395612388abf2df6c0b"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": ".",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    },
+    {
+      "source": "zinsta",
+      "codebase": "zinsta",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}

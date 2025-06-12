@@ -20,22 +20,19 @@ class AppStyle {
           foregroundColor: AppColor.availableColorSchemes[themeIndex].onSurface,
           elevation: 0,
         ),
+        listTileTheme: ListTileThemeData(
+          tileColor: themeIndex == 0 ? AppBasicsColors.lightCardColor : AppBasicsColors.darkCardColor,
+        ),
         cardColor: themeIndex == 0 ? AppBasicsColors.lightCardColor : AppBasicsColors.darkCardColor,
-        dividerColor:
-            themeIndex == 0 ? AppBasicsColors.lightBackground : AppBasicsColors.darkBackground,
+        dividerColor: themeIndex == 0 ? AppBasicsColors.lightBackground : AppBasicsColors.darkBackground,
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: AppColor.availableColorSchemes[themeIndex].surface,
           selectedItemColor: AppColor.availableColorSchemes[themeIndex].primary,
-          unselectedItemColor: AppColor.availableColorSchemes[themeIndex].onSurface.withValues(
-            alpha: 0.5,
-          ),
+          unselectedItemColor: AppColor.availableColorSchemes[themeIndex].onSurface.withValues(alpha: 0.5),
         ),
         bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor:
-              themeIndex == 0 ? AppBasicsColors.lightCardColor : AppBasicsColors.darkCardColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
+          backgroundColor: themeIndex == 0 ? AppBasicsColors.lightCardColor : AppBasicsColors.darkCardColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
         ),
       );
     } else {

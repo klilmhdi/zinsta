@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notification_repository/notification_repository.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:zinsta/blocs/user_blocs/follower_following_bloc/follower_bloc.dart';
-import 'package:zinsta/components/consts/leading_appbar.dart';
 import 'package:zinsta/components/consts/list_tile.dart';
 import 'package:zinsta/components/consts/loading_indicator.dart';
 import 'package:zinsta/components/profile_components/empty_follower_following.dart';
@@ -16,10 +16,10 @@ class FollowersFollowingsScreen extends StatelessWidget {
   Widget build(BuildContext context) => DefaultTabController(
     length: 2,
     child: BlocProvider(
-      create: (_) => FollowersBloc(userRepository: FirebaseUserRepository()),
+      create: (_) => FollowersBloc(userRepository: FirebaseUserRepository(notificationRepository: OneSignalNotificationRepository())),
       child: Scaffold(
         appBar: AppBar(
-          leading: buildLeadingAppbarWidget(context),
+          leading: BackButton(),
           leadingWidth: 40,
           title: const Text("Friends", style: TextStyle(fontWeight: FontWeight.bold)),
           bottom: const TabBar(
