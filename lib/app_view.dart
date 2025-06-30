@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:notification_repository/notification_repository.dart';
-import 'package:post_repository/post_repository.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'package:zinsta/blocs/cubits/image_handler_cubit/image_handler_cubit.dart';
-import 'package:zinsta/blocs/cubits/search_cubit/search_cubit.dart';
-import 'package:zinsta/blocs/post_blocs/create_post_bloc/create_post_bloc.dart';
-import 'package:zinsta/blocs/post_blocs/delete_post_bloc/delete_user_bloc.dart';
-import 'package:zinsta/blocs/post_blocs/edit_post_bloc/edit_post_bloc.dart';
-import 'package:zinsta/blocs/post_blocs/fetch_user_posts_bloc/fetch_user_posts_bloc.dart';
-import 'package:zinsta/components/consts/app_style.dart';
-import 'package:zinsta/components/consts/strings.dart';
-import 'package:zinsta/screens/authentication/welcome_screen.dart';
+// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:zinsta/src/blocs/cubits/image_handler_cubit/image_handler_cubit.dart';
+import 'package:zinsta/src/blocs/cubits/search_cubit/search_cubit.dart';
+import 'package:zinsta/src/blocs/post_blocs/create_post_bloc/create_post_bloc.dart';
+import 'package:zinsta/src/blocs/post_blocs/delete_post_bloc/delete_user_bloc.dart';
+import 'package:zinsta/src/blocs/post_blocs/edit_post_bloc/edit_post_bloc.dart';
+import 'package:zinsta/src/blocs/post_blocs/fetch_user_posts_bloc/fetch_user_posts_bloc.dart';
+import 'package:zinsta/src/components/consts/app_style.dart';
+import 'package:zinsta/src/components/consts/strings.dart';
+import 'package:zinsta/src/repo/firebase_post_repository.dart';
+import 'package:zinsta/src/repo/onesignal_notification_repository.dart';
+import 'package:zinsta/src/screens/authentication/welcome_screen.dart';
 
-import 'blocs/auth_blocs/authentication_bloc/authentication_bloc.dart';
-import 'blocs/auth_blocs/sign_in_bloc/sign_in_bloc.dart';
-import 'blocs/cubits/app_cubit/app_cubit.dart';
-import 'blocs/notification_blocs/notificaiton_bloc.dart';
-import 'blocs/post_blocs/get_post_bloc/get_post_bloc.dart';
-import 'blocs/post_blocs/like_comment_cubit/like_comment_cubit.dart';
-import 'blocs/user_blocs/follower_following_bloc/follower_bloc.dart';
-import 'blocs/user_blocs/my_user_bloc/my_user_bloc.dart';
-import 'blocs/user_blocs/update_user_info_bloc/update_user_info_bloc.dart';
+import 'src/blocs/auth_blocs/authentication_bloc/authentication_bloc.dart';
+import 'src/blocs/auth_blocs/sign_in_bloc/sign_in_bloc.dart';
+import 'src/blocs/cubits/app_cubit/app_cubit.dart';
+import 'src/blocs/notification_blocs/notificaiton_bloc.dart';
+import 'src/blocs/post_blocs/get_post_bloc/get_post_bloc.dart';
+import 'src/blocs/post_blocs/like_comment_cubit/like_comment_cubit.dart';
+import 'src/blocs/user_blocs/follower_following_bloc/follower_bloc.dart';
+import 'src/blocs/user_blocs/my_user_bloc/my_user_bloc.dart';
+import 'src/blocs/user_blocs/update_user_info_bloc/update_user_info_bloc.dart';
 import 'generated/l10n.dart';
-import 'screens/layout/layout.dart';
+import 'src/screens/layout/layout.dart';
 
 class MyAppView extends StatelessWidget {
   const MyAppView({super.key});
@@ -160,9 +160,9 @@ class MyAppView extends StatelessWidget {
                 }
               },
             ),
-            builder:
-                (context, child) =>
-                StreamChat(client: StreamChatClient("z3k88gbquy4a", logLevel: Level.INFO), child: child),
+            // builder:
+            //     (context, child) =>
+            //     StreamChat(client: StreamChatClient("z3k88gbquy4a", logLevel: Level.INFO), child: child),
           );
         },
       ),

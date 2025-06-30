@@ -6,15 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:notification_repository/notification_repository.dart';
-import 'package:user_repository/user_repository.dart';
-import 'package:zinsta/components/consts/di.dart';
-import 'package:zinsta/components/consts/shared_perferenced.dart';
+import 'package:zinsta/src/blocs/bloc_observer.dart';
+import 'package:zinsta/src/components/consts/di.dart';
+import 'package:zinsta/src/components/consts/shared_perferenced.dart';
 import 'package:zinsta/firebase_options.dart';
-import 'package:zinsta/services/consumer.dart';
+import 'package:zinsta/src/repo/firebase_user_repository.dart';
+import 'package:zinsta/src/repo/onesignal_notification_repository.dart';
 
 import 'app.dart';
-import 'blocs/bloc_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,10 +25,10 @@ void main() async {
   await SharedPrefController().initPreferences();
 
   /// init di (injector)
-  await AppInjector.init();
+  // await AppInjector.init();
 
   /// init saved login to GetStream
-  await AppConsumers().handleSavedLogin();
+  // await AppConsumers().handleSavedLogin();
 
   /// init blocs
   Bloc.observer = MyBlocObserver();

@@ -20,6 +20,7 @@ dependencies:
   dart_jsonwebtoken: ^2.14.1
   flutter_native_splash: ^2.2.18
   flutter_launcher_icons: ^0.12.0
+  flutter_slidable: ^4.0.0
   get_it: ^8.0.0
   hugeicons: ^0.0.11
   image_cropper: ^9.0.0
@@ -35,7 +36,7 @@ dependencies:
   # Firebase
   cloud_firestore: ^5.6.7
   firebase_auth: ^5.5.3
-  firebase_core: ^3.13.0
+#  firebase_core: ^3.13.0
   firebase_crashlytics: ^4.3.5
   firebase_messaging: ^15.2.5
   firebase_storage: ^12.4.5
@@ -51,22 +52,13 @@ dependencies:
   flutter_bloc: ^9.1.0
 
   # GetStream
-  stream_chat_flutter: ^9.10.0
-  stream_chat_flutter_core: ^9.10.0
-  stream_chat_localizations: ^9.10.0
-  stream_chat_persistence: ^9.10.0
-  stream_video: ^0.9.2
-  stream_video_flutter: ^0.9.2
-  stream_video_push_notification: ^0.9.2
-
-
-  # Custom Repository
-  user_repository:
-    path: packages/user_repository
-  post_repository:
-    path: packages/post_repository
-  notification_repository:
-    path: packages/notification_repository
+#  stream_chat_flutter: ^9.10.0
+#  stream_chat_flutter_core: ^9.10.0
+#  stream_chat_localizations: ^9.10.0
+#  stream_chat_persistence: ^9.10.0
+#  stream_video: ^0.9.2
+#  stream_video_flutter: ^0.9.2
+#  stream_video_push_notification: ^0.9.2
 
 dev_dependencies:
   flutter_test:
